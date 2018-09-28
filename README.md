@@ -1,21 +1,4 @@
-# to-do-app
+# Trello like to-do-list-app
 
-## Project setup
-```
-npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
+![screenshot from 2018-09-28 07-37-28](https://user-images.githubusercontent.com/19642322/46188386-80496280-c2f1-11e8-9617-54ecab6c1153.png)
