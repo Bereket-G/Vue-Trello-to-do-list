@@ -25,7 +25,7 @@ export default {
 
         },
         updateTask (){
-            this.$emit('updateTask', this.id);
+            this.$emit('updateTask', this.id, this.status);
         }
     },
     watch: {

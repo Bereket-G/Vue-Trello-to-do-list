@@ -41,9 +41,11 @@ export default {
             Tasks: [],
             updateTask_ : false,
             updateTaskId_ : '',
+            updateTaskStatus : '',
             previousContent: '',
             movedtaskId: '',
             movedtaskBody: '',
+            movedtaskStatus: '',
             movedToId : ''
         }
     },
@@ -52,7 +54,8 @@ export default {
         dragged(){
             api.updateTask(this.movedtaskId, {
                 taskListId: this.movedToId,
-                body: this.movedtaskBody
+                body: this.movedtaskBody,
+                status: this.movedtaskStatus
             }).then( () => {
                 this.refreshTasks();
                 this.updateTask_ = false;
@@ -65,6 +68,7 @@ export default {
         checkMove: function(evt){
             this.movedtaskId = evt.draggedContext.element.id;
             this.movedtaskBody = evt.draggedContext.element.body;
+            this.movedtaskStatus = evt.draggedContext.element.status;
             this.movedToId = evt.relatedContext.element.taskListId;
         },
 
@@ -89,9 +93,10 @@ export default {
                 this.showSuccessMsg();
             });
         },
-        updateTask (value){
+        updateTask (value, status){
             this.updateTask_ = true;
             this.updateTaskId_ = value;
+            this.updateTaskStatus = status;
             this.showWarnMsg();
             for(var i = 0; i < this.Tasks.length; i++) {
                 if(this.Tasks[i].id == value) {
@@ -103,7 +108,8 @@ export default {
         updateTaskWithNewBody(newContent, Id){
             api.updateTask(Id, {
                 body:newContent,
-                taskListId: this._taskId
+                taskListId: this._taskId,
+                status: this.updateTaskStatus
             }).then( () => {
                 this.refreshTasks();
                 this.updateTask_ = false;
