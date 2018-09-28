@@ -3,9 +3,11 @@
   <div class="list">
     <header>{{title}} {{_taskId}} </header>
     <ul>
-      <template v-for="task in Tasks">
-        <Task :body=task.body :id=task.id v-bind:key="task.id" @deleteTask="deleteTask" @updateTask="updateTask"> </Task>
-      </template>
+      <draggable v-model="Tasks" :options="{group:'people'}" @start="drag=true" @end="dragged" :move="checkMove">
+        <template v-for="task in Tasks">
+          <Task :body=task.body :id=task.id v-bind:key="task.id" @deleteTask="deleteTask" @updateTask="updateTask"> </Task>
+        </template>
+      </draggable>
     </ul>
     <NewTask :update=updateTask_ :updateId=updateTaskId_ :ListName=title :previousContent=previousContent
              :ListId=id @taskAdded="newTaskAdded" @updateTaskWithNewBody="updateTaskWithNewBody"></NewTask>
@@ -17,6 +19,7 @@
 import Task from './Task.vue'
 import NewTask from './NewTask.vue'
 import api from '../api'
+import draggable from 'vuedraggable'
 
 import VueNotifications from 'vue-notifications'
 
@@ -24,7 +27,8 @@ export default {
   name: 'Task List Container',
   components: {
       Task,
-      NewTask
+      NewTask,
+      draggable
   },
   props: {
       title: String,
@@ -37,10 +41,33 @@ export default {
             Tasks: [],
             updateTask_ : false,
             updateTaskId_ : '',
-            previousContent: ''
+            previousContent: '',
+            movedtaskId: '',
+            movedtaskBody: '',
+            movedToId : ''
         }
     },
     methods: {
+
+        dragged(){
+            api.updateTask(this.movedtaskId, {
+                taskListId: this.movedToId,
+                body: this.movedtaskBody
+            }).then( () => {
+                this.refreshTasks();
+                this.updateTask_ = false;
+                this.showSuccessMsg();
+            }).catch( () => {
+                this.showErrorMsg();
+            });
+        },
+
+        checkMove: function(evt){
+            this.movedtaskId = evt.draggedContext.element.id;
+            this.movedtaskBody = evt.draggedContext.element.body;
+            this.movedToId = evt.relatedContext.element.taskListId;
+        },
+
          async refreshTasks () {
             this.loading = true;
             this.Tasks = await api.getTodoListsOfTask(this._taskId);
@@ -88,7 +115,9 @@ export default {
         api.getTodoListsOfTask(this._taskId).then( res => {
             this.Tasks = res;
         })
-      }, notifications: {
+
+      },
+    notifications: {
         showSuccessMsg: {
             type: VueNotifications.types.success,
             message: 'Successful !'

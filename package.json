@@ -11,7 +11,8 @@
     "axios": "^0.18.0",
     "mini-toastr": "^0.8.1",
     "vue": "^2.5.17",
-    "vue-notifications": "^0.9.0"
+    "vue-notifications": "^0.9.0",
+    "vuedraggable": "^2.16.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.3",
