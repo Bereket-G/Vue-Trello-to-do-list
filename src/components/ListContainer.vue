@@ -1,11 +1,11 @@
 /* eslint-disable */
 <template>
   <div class="list">
-    <header>{{title}} {{_taskId}} </header>
+    <header>{{title}} </header>
     <ul>
       <draggable v-model="Tasks" :options="{group:'people'}" @start="drag=true" @end="dragged" :move="checkMove">
         <template v-for="task in Tasks">
-          <Task :body=task.body :id=task.id v-bind:key="task.id" @deleteTask="deleteTask" @updateTask="updateTask"> </Task>
+          <Task :body=task.body :_status="task.status" :id=task.id v-bind:key="task.id" @updateStatusTask="updateStatusTask" @deleteTask="deleteTask" @updateTask="updateTask"> </Task>
         </template>
       </draggable>
     </ul>
@@ -104,6 +104,17 @@ export default {
             api.updateTask(Id, {
                 body:newContent,
                 taskListId: this._taskId
+            }).then( () => {
+                this.refreshTasks();
+                this.updateTask_ = false;
+                this.showSuccessMsg();
+            });
+        },
+        updateStatusTask(id, body, status){
+            api.updateTask(id, {
+                body: body,
+                taskListId: this._taskId,
+                status: status
             }).then( () => {
                 this.refreshTasks();
                 this.updateTask_ = false;

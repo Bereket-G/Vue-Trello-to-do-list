@@ -9,11 +9,12 @@ export default {
   name: 'Task',
   props : {
       id: String,
-      body: String
+      body: String,
+      _status: Boolean
   },
   data() {
       return {
-        status: false
+        status: this._status
       }
   },
     methods: {
@@ -25,6 +26,11 @@ export default {
         },
         updateTask (){
             this.$emit('updateTask', this.id);
+        }
+    },
+    watch: {
+        status(value){
+            this.$emit('updateStatusTask', this.id, this.body, value);
         }
     }
 }
